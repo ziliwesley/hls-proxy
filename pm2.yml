@@ -1,0 +1,14 @@
+# PM2 Configurations
+# Application configuration section
+# http://pm2.keymetrics.io/docs/usage/application-declaration/
+apps:
+  # 行情 Web API 服务
+  - name: "hls-proxy-http-server"
+    script: "app.js"
+    # 根据 CPU 核数绝对开启几个实例
+    instances: 1
+    exec_mode: "cluster"
+    # 日志记录
+    error_file: "logs/err.log"
+    out_file: "logs/out.log"
+    log_date_format: "MM-DD HH:mm:ss"
