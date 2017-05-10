@@ -1,0 +1,23 @@
+{
+  "name": "hls-proxy",
+  "version": "0.0.1",
+  "description": "Basic proxy app using ffmpeg for downloading and mirroring remote live stream",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ziliwesley/hls-proxy.git"
+  },
+  "author": "ziliwesley",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ziliwesley/hls-proxy/issues"
+  },
+  "homepage": "https://github.com/ziliwesley/hls-proxy#readme",
+  "dependencies": {
+    "koa": "^2.2.0"
+  }
+}
