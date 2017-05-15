@@ -1,3 +1,6 @@
+# Genereated files
+static/assets
+
 # Logs
 logs
 *.log

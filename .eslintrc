@@ -6,12 +6,13 @@ parser: "babel-eslint"
 env:
   es6: true
   node: true
+  browser: true
 
 ecmaFeatures:
   modules: true
 
 rules:
-  no-console: 1
+  no-console: 0
   no-undef:
     - 2
   constructor-super:
