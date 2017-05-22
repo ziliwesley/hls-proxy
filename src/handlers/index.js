@@ -1,12 +1,22 @@
 const compose = require('koa-compose')
 
-const douyuHandler = require('./douyu-playback.js');
+const douyuPlaybackHandler = require('./douyu-playback.js');
+const douyuStreamHandler = require('./douyu-stream.js');
+
+async function defaultHanlder(ctx) {
+    ctx.result = {
+        error: 10000,
+        message: 'Not Supported'
+    };
+}
 
 module.exports = async function (opts) {
     const ctx = Object.assign({}, opts);
 
     const handlers = compose([
-        douyuHandler
+        douyuPlaybackHandler,
+        douyuStreamHandler,
+        defaultHanlder
     ]);
 
     try {

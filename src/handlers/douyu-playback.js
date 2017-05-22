@@ -22,8 +22,8 @@ function getStreamInfo(id) {
     });
 }
 
-// Use phantom.js to extract extra info
-async function getExtraStreamInfo(mobileUrl) {
+// Use phantom.js to extract meta info
+async function getMetaInfo(mobileUrl) {
     const instance = await phantom.create();
     const page = await instance.createPage();
 
@@ -33,7 +33,7 @@ async function getExtraStreamInfo(mobileUrl) {
         const meta = await page.evaluateJavaScript('function () { return window.$DATA }');
         return meta;
     } catch (e) {
-        console.error('Unable to get extra info:', e.message);
+        console.error('Unable to get meta info:', e.message);
 
         return {};
     } finally {
@@ -43,12 +43,35 @@ async function getExtraStreamInfo(mobileUrl) {
 }
 
 // Get url and video info from given source (web url)
-async function handleDouyuStream(ctx) {
+async function handleDouyuPlayback(ctx) {
     const id = getStreamID(ctx.url);
-    const result = await getStreamInfo(id);
+    const result = {};
+    let rawResult;
 
-    if (ctx.extra) {
-        result.extra = await getExtraStreamInfo(ctx.url);
+    try {
+        rawResult = await getStreamInfo(id);
+    } catch (e) {
+        return {
+            errorCode: 10001,
+            message: e.message
+        };
+    }
+    
+
+    if (rawResult.error) {
+        return {
+            errorCode: rawResult.error
+        };
+    }
+
+    result.url = rawResult.data.video_url;
+
+    if (ctx.meta) {
+        let meta = await getMetaInfo(ctx.url);
+        result.meta = {
+            title: meta.title,
+            poster: meta.room_pic
+        };
     }
 
     return result;
@@ -57,15 +80,15 @@ async function handleDouyuStream(ctx) {
 // Handler
 module.exports = async function (ctx, next) {
     if (desktopURLPattern.test(ctx.source)) {
-        console.log('match: 斗鱼桌面端');
+        console.log('match: 斗鱼桌面端录像');
         // Transform source
         ctx.url = ctx.source.replace('v.douyu', 'vmobile.douyu');
         // Convert to url for mobile browser
-        ctx.result = await handleDouyuStream(ctx);
+        ctx.result = await handleDouyuPlayback(ctx);
     } else if (mobileURLPattern.test(ctx.source)) {
-        console.log('match: 斗鱼移动端');
+        console.log('match: 斗鱼移动端录像');
         ctx.url = ctx.source;
-        ctx.result = await handleDouyuStream(ctx);
+        ctx.result = await handleDouyuPlayback(ctx);
     } else {
         // Handle by other handlers
         await next();
